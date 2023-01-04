@@ -1,16 +1,16 @@
-package com.example.robotarmclient.ui.gallery;
+package com.example.robotarmclient.ui.neuralnetworkcontrol;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class GalleryViewModel extends ViewModel {
+public class NeuralNetworkControlViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public GalleryViewModel() {
+    public NeuralNetworkControlViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is gallery fragment");
+        mText.setValue("This is neural network control fragment");
     }
 
     public LiveData<String> getText() {

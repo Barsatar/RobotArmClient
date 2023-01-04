@@ -3,23 +3,23 @@
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/mobile_navigation"
-            app:startDestination="@+id/nav_home">
+            app:startDestination="@+id/nav_program_control">
 
     <fragment
-            android:id="@+id/nav_home"
-            android:name="com.example.robotarmclient.ui.home.HomeFragment"
-            android:label="@string/menu_home"
-            tools:layout="@layout/fragment_home"/>
+            android:id="@+id/nav_program_control"
+            android:name="com.example.robotarmclient.ui.programcontrol.ProgramControlFragment"
+            android:label="@string/menu_program_control"
+            tools:layout="@layout/fragment_program_control"/>
 
     <fragment
-            android:id="@+id/nav_gallery"
-            android:name="com.example.robotarmclient.ui.gallery.GalleryFragment"
-            android:label="@string/menu_gallery"
-            tools:layout="@layout/fragment_gallery"/>
+            android:id="@+id/nav_neural_network_control"
+            android:name="com.example.robotarmclient.ui.neuralnetworkcontrol.NeuralNetworkControlFragment"
+            android:label="@string/menu_neural_network_control"
+            tools:layout="@layout/fragment_neural_network_control"/>
 
     <fragment
-            android:id="@+id/nav_slideshow"
-            android:name="com.example.robotarmclient.ui.slideshow.SlideshowFragment"
-            android:label="@string/menu_slideshow"
-            tools:layout="@layout/fragment_slideshow"/>
+            android:id="@+id/nav_settings"
+            android:name="com.example.robotarmclient.ui.settings.SettingsFragment"
+            android:label="@string/menu_settings"
+            tools:layout="@layout/fragment_settings"/>
 </navigation>

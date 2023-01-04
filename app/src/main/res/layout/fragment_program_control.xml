@@ -5,10 +5,11 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.slideshow.SlideshowFragment">
+        android:background="@color/bg_1"
+        tools:context=".ui.programcontrol.ProgramControlFragment">
 
     <TextView
-            android:id="@+id/text_slideshow"
+            android:id="@+id/text_program_control"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"

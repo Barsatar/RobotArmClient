@@ -3,18 +3,25 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
-        <item
-                android:id="@+id/nav_home"
-                android:icon="@drawable/ic_menu_camera"
-                android:title="@string/menu_home"/>
-        <item
-                android:id="@+id/nav_gallery"
-                android:icon="@drawable/ic_menu_gallery"
-                android:title="@string/menu_gallery"/>
-        <item
-                android:id="@+id/nav_slideshow"
-                android:icon="@drawable/ic_menu_slideshow"
-                android:title="@string/menu_slideshow"/>
-    </group>
+    <item android:title="@string/menu_title_mods">
+        <menu>
+            <item
+                    android:id="@+id/nav_program_control"
+                    android:icon="@drawable/ic_menu_program_control"
+                    android:title="@string/menu_program_control"/>
+            <item
+                    android:id="@+id/nav_neural_network_control"
+                    android:icon="@drawable/ic_menu_neural_network_control"
+                    android:title="@string/menu_neural_network_control"/>
+        </menu>
+    </item>
+
+    <item android:title="@string/menu_title_app">
+        <menu>
+            <item
+                    android:id="@+id/nav_settings"
+                    android:icon="@drawable/ic_menu_settings"
+                    android:title="@string/menu_settings"/>
+        </menu>
+    </item>
 </menu>
