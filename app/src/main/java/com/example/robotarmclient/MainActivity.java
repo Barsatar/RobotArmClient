@@ -1,9 +1,7 @@
 package com.example.robotarmclient;
 
 import android.os.Bundle;
-import android.view.View;
-import android.view.Menu;
-import com.google.android.material.snackbar.Snackbar;
+
 import com.google.android.material.navigation.NavigationView;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -17,6 +15,8 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
+    private ClientTcpSocket clientTcpSocket;
+    private ServerUdpSocket serverUdpSocket;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,12 +25,12 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        this.clientTcpSocket = new ClientTcpSocket("192.168.43.154", 7000);
+
         setSupportActionBar(binding.appBarMain.toolbar);
 
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_program_control, R.id.nav_neural_network_control, R.id.nav_settings)
                 .setOpenableLayout(drawer)

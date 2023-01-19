@@ -8,6 +8,12 @@
         android:background="@color/bg_1"
         tools:context=".ui.programcontrol.ProgramControlFragment">
 
+    <VideoView
+            android:id="@+id/myVideo"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:layout_centerInParent="true"
+            tools:ignore="MissingConstraints"/>
     <TextView
             android:id="@+id/text_program_control"
             android:layout_width="match_parent"

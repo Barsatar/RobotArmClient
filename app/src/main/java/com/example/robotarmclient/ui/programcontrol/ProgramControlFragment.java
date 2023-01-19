@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import com.example.robotarmclient.databinding.FragmentProgramControlBinding;
+import android.net.Uri;
+import android.widget.VideoView;
 
 public class ProgramControlFragment extends Fragment {
 
@@ -21,6 +23,15 @@ public class ProgramControlFragment extends Fragment {
 
         binding = FragmentProgramControlBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        /*
+        VideoView vidView = binding.myVideo;
+
+        String vidAddress = "https://amvnews.ru/index.php?go=Files&file=down&id=9945&alt=4";
+        Uri vidUri = Uri.parse(vidAddress);
+        vidView.setVideoURI(vidUri);
+        vidView.start();
+         */
 
         final TextView textView = binding.textProgramControl;
         programControlViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
