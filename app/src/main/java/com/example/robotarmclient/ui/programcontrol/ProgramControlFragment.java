@@ -1,10 +1,12 @@
 package com.example.robotarmclient.ui.programcontrol;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.VideoView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -21,6 +23,13 @@ public class ProgramControlFragment extends Fragment {
 
         binding = FragmentProgramControlBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        VideoView vidView = binding.myVideo;
+
+        String vidAddress = "https://amvnews.ru/index.php?go=Files&file=down&id=9945&alt=4";
+        Uri vidUri = Uri.parse(vidAddress);
+        vidView.setVideoURI(vidUri);
+        vidView.start();
 
         final TextView textView = binding.textProgramControl;
         programControlViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
