@@ -1,9 +1,7 @@
 package com.example.robotarmclient;
 
 import android.os.Bundle;
-import android.view.View;
-import android.view.Menu;
-import com.google.android.material.snackbar.Snackbar;
+import androidx.annotation.NonNull;
 import com.google.android.material.navigation.NavigationView;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -24,6 +22,8 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        UDP udp = new UDP("192.168.43.154", 7000);
 
         setSupportActionBar(binding.appBarMain.toolbar);
 
