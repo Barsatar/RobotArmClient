@@ -19,6 +19,7 @@ public class TCPSocket implements Runnable {
         this.__TCPSocketThread__.setPriority(Thread.NORM_PRIORITY);
         this.__TCPSocketThread__.start();
     }
+
     @Override
     public void run() {
         try {
