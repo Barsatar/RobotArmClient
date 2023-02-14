@@ -9,16 +9,48 @@
         tools:context=".ui.settings.SettingsFragment">
 
     <TextView
-            android:id="@+id/text_settings"
+            android:id="@+id/text_settings_tcp_socket_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
+            android:text="@string/settings_tcp_socket_title"
             android:textAlignment="center"
-            android:textSize="20sp"
+            android:textSize="22sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent" app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintVertical_bias="0.011" android:fontFamily="sans-serif" android:textStyle="bold"/>
+
+    <EditText
+            android:id="@+id/edit_text_settings_ip_address"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:inputType="textPersonName"
+            android:ems="10"
+            app:layout_constraintEnd_toEndOf="@+id/text_settings_tcp_socket_title"
+            app:layout_constraintStart_toStartOf="@+id/text_settings_tcp_socket_title"
+            app:layout_constraintTop_toBottomOf="@+id/text_settings_tcp_socket_title"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.014"
+            android:hint="@string/settings_ip_address_hint"
+            android:autofillHints=""
+            android:textColorHint="#616161"/>
+
+    <EditText
+            android:id="@+id/edit_text_settings_port"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:inputType="textPersonName"
+            android:ems="10"
+            app:layout_constraintEnd_toEndOf="@+id/edit_text_settings_ip_address"
+            app:layout_constraintStart_toStartOf="@+id/edit_text_settings_ip_address"
+            app:layout_constraintTop_toBottomOf="@+id/edit_text_settings_ip_address"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="0.014"
+            android:hint="@string/settings_port_hint"
+            android:autofillHints=""
+            android:textColorHint="#616161"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

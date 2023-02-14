@@ -11,19 +11,16 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.robotarmclient.databinding.FragmentSettingsBinding;
 
 public class SettingsFragment extends Fragment {
-
     private FragmentSettingsBinding binding;
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        SettingsViewModel settingsViewModel =
-                new ViewModelProvider(this).get(SettingsViewModel.class);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        SettingsViewModel settingsViewModel = new ViewModelProvider(this).get(SettingsViewModel.class);
 
         binding = FragmentSettingsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textSettings;
-        settingsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textViewSettingsTCPSocketTitle = binding.textSettingsTcpSocketTitle;
+        settingsViewModel.getText().observe(getViewLifecycleOwner(), textViewSettingsTCPSocketTitle::setText);
         return root;
     }
 

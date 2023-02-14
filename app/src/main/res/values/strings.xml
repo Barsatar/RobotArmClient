@@ -12,4 +12,8 @@
     <string name="menu_program_control">Программное управление</string>
     <string name="menu_neural_network_control">Нейросетевое управление</string>
     <string name="menu_settings">Настройки</string>
+
+    <string name="settings_tcp_socket_title">TCP подключение</string>
+    <string name="settings_ip_address_hint">Адрес IP</string>
+    <string name="settings_port_hint">Порт</string>
 </resources>
