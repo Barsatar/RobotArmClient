@@ -24,6 +24,9 @@ public class TCPSocket implements Runnable {
         this.setPort(port);
         this.setErrorStatus(false);
         this.setWorkStatus(false);
+        this.setSocketNull();
+        this.setOutputStreamNull();
+        this.setInputStreamNull();
         this.createTCPSocketThread();
 
         System.out.println("RA_TCPSocket_Init: OK");
@@ -31,19 +34,34 @@ public class TCPSocket implements Runnable {
 
     @Override
     public void run() {
+        this.setErrorStatus(false);
         this.setWorkStatus(true);
+
         this.createSocket();
         if (this.getErrorStatus()) {
+            this.closeOutputStream();
+            this.closeInputStream();
+            this.closeSocket();
             this.setWorkStatus(false);
+
             return;
         }
+
         this.createOutputStream();
         if (this.getErrorStatus()) {
+            this.closeOutputStream();
+            this.closeInputStream();
+            this.closeSocket();
             this.setWorkStatus(false);
+
             return;
         }
+
         this.createInputStream();
         if (this.getErrorStatus()) {
+            this.closeOutputStream();
+            this.closeInputStream();
+            this.closeSocket();
             this.setWorkStatus(false);
             return;
         }
@@ -52,11 +70,21 @@ public class TCPSocket implements Runnable {
         this.createReceiveDataListener();
         this.createTestConnection();
 
+        while (true) {
+            if (this.getErrorStatus()) {
+                   break;
+            }
+        }
+
+        this.closeOutputStream();
+        this.closeInputStream();
+        this.closeSocket();
         this.setWorkStatus(false);
+
         return;
     }
 
-    private void createTCPSocketThread() {
+    public void createTCPSocketThread() {
         this.__TCPSocketThread__ = new Thread(this);
         this.__TCPSocketThread__.setPriority(Thread.NORM_PRIORITY);
         this.__TCPSocketThread__.start();
@@ -70,8 +98,8 @@ public class TCPSocket implements Runnable {
 
             System.out.println("RA_TCPSocket_CreateSocket: OK");
         } catch (IOException e) {
-            this.setErrorStatus(true);
             System.out.println("RA_TCPSocket_CreateSocket: ERROR (" + e.toString() + ")");
+            this.setErrorStatus(true);
         }
     }
 
@@ -81,8 +109,8 @@ public class TCPSocket implements Runnable {
 
             System.out.println("RA_TCPSocket_CreateOutputStream: OK");
         } catch (IOException e) {
-            this.setErrorStatus(true);
             System.out.println("RA_TCPSocket_CreateOutputStream: ERROR (" + e.toString() + ")");
+            this.setErrorStatus(true);
         }
     }
 
@@ -92,8 +120,8 @@ public class TCPSocket implements Runnable {
 
             System.out.println("RA_TCPSocket_CreateInputStream: OK");
         } catch (IOException e) {
-            this.setErrorStatus(true);
             System.out.println("RA_TCPSocket_CreateInputStream: ERROR (" + e.toString() + ")");
+            this.setErrorStatus(true);
         }
     }
 
@@ -115,6 +143,54 @@ public class TCPSocket implements Runnable {
         System.out.println("RA_TCPSocket_CreateTestConnection: OK");
     }
 
+    private void closeSocket() {
+        try {
+            this.getSocket().close();
+            this.setSocketNull();
+
+            System.out.println("RA_TCPSocket_CloseSocket: OK");
+        } catch (IOException e) {
+            System.out.println("RA_TCPSocket_CloseConnection: ERROR (" + e.toString() + ")");
+            this.setErrorStatus(true);
+        }
+    }
+
+    private void closeOutputStream() {
+        try {
+            this.getOutputStream().close();
+            this.setOutputStreamNull();
+
+            System.out.println("RA_TCPSocket_CloseOutputStream: OK");
+        } catch (IOException e) {
+            System.out.println("RA_TCPSocket_CloseOutputStream: ERROR (" + e.toString() + ")");
+            this.setErrorStatus(true);
+        }
+    }
+
+    private void closeInputStream() {
+        try {
+            this.getInputStream().close();
+            this.setInputStreamNull();
+
+            System.out.println("RA_TCPSocket_CloseInputStream: OK");
+        } catch (IOException e) {
+            System.out.println("RA_TCPSocket_CloseInputStream: ERROR (" + e.toString() + ")");
+            this.setErrorStatus(true);
+        }
+    }
+
+    private void setSocketNull() {
+        this.__socket__ = null;
+    }
+
+    private void setOutputStreamNull() {
+        this.__outputStream__ = null;
+    }
+
+    private void setInputStreamNull() {
+        this.__inputStream__ = null;
+    }
+
     private void setIP(String ip) {
         this.__ip__ = ip;
     }
@@ -131,7 +207,7 @@ public class TCPSocket implements Runnable {
         this.__errorStatus__ = value;
     }
 
-    private boolean getWorkStatus() {
+    public boolean getWorkStatus() {
         return this.__workStatus__;
     }
 
@@ -147,11 +223,11 @@ public class TCPSocket implements Runnable {
         return this.__port__;
     }
 
-    private Thread getTCPSocketThread() {
+    public Thread getTCPSocketThread() {
         return this.__TCPSocketThread__;
     }
 
-    private Socket getSocket() {
+    public Socket getSocket() {
         return this.__socket__;
     }
 
@@ -179,12 +255,12 @@ public class TCPSocket implements Runnable {
         try {
             this.getOutputStream().write(data);
 
-            if (this.byteToString(this.trimData(data)).length() != 0 && !this.byteToString(this.trimData(data)).equals("TEST_CONNECTION")) {
+            if (this.removeTestConnectionData(this.byteToString(this.trimData(data))).length() != 0) {
                 System.out.println("RA_TCPSocket_SendData: OK (" + this.byteToString(data) + ")");
             }
         } catch (IOException e) {
-            this.setErrorStatus(true);
             System.out.println("RA_TCPSocket_SendData: ERROR (" + e.toString() + ")");
+            this.setErrorStatus(true);
         }
     }
 
@@ -195,12 +271,12 @@ public class TCPSocket implements Runnable {
         try {
             this.getInputStream().read(data);
 
-            if (this.byteToString(this.trimData(data)).length() != 0 && !this.byteToString(this.trimData(data)).equals("TEST_CONNECTION")) {
+            if (this.removeTestConnectionData(this.byteToString(this.trimData(data))).length() != 0) {
                 System.out.println("RA_TCPSocket_ReceiveData: OK (" + this.byteToString(this.trimData(data)) + ")");
             }
         } catch (IOException e) {
-            this.setErrorStatus(true);
             System.out.println("RA_TCPSocket_ReceiveData: ERROR (" + e.toString() + ")");
+            this.setErrorStatus(true);
        }
 
         return data;
@@ -229,7 +305,11 @@ public class TCPSocket implements Runnable {
         return new String(data);
     }
 
-    public static class SendDataListener implements Runnable {
+    private String removeTestConnectionData(String data) {
+        return data.replaceAll("TEST_CONNECTION", "");
+    }
+
+    private static class SendDataListener implements Runnable {
         private Thread __sendDataListenerThread__;
         private TCPSocket __TCPSocket__;
 
@@ -243,22 +323,19 @@ public class TCPSocket implements Runnable {
         public void run() {
             System.out.println("RA_TCPSocket_SendDataListener_Start: OK");
 
-            int i = 0;
-
             while (true) {
                 if (this.getTCPSocket().getErrorStatus()) {
                     break;
                 }
 
-                this.getTCPSocket().sendData(String.valueOf(i).getBytes(StandardCharsets.UTF_8));
-                ++i;
+                this.getTCPSocket().sendData("".getBytes(StandardCharsets.UTF_8));
 
                 if (this.getTCPSocket().getErrorStatus()) {
                     break;
                 }
 
                 try {
-                    Thread.sleep(100);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
@@ -290,7 +367,7 @@ public class TCPSocket implements Runnable {
         }
     }
 
-    public static class ReceiveDataListener implements Runnable {
+    private static class ReceiveDataListener implements Runnable {
         private Thread __receiveDataListenerThread__;
         private TCPSocket __TCPSocket__;
 
@@ -342,7 +419,7 @@ public class TCPSocket implements Runnable {
         }
     }
 
-    public static class TestConnection implements Runnable {
+    private static class TestConnection implements Runnable {
         private Thread __testConnectionThread__;
         private TCPSocket __TCPSocket__;
 

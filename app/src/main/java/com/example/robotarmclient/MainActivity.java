@@ -1,9 +1,6 @@
 package com.example.robotarmclient;
 
 import android.os.Bundle;
-import android.view.View;
-import android.view.Menu;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -14,10 +11,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.robotarmclient.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
-
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
-    private RobotAramManager __robotArmManager__;
+    private RobotArmManager __robotArmManager__;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +47,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void createRobotArmManager() {
-        this.__robotArmManager__ = new RobotAramManager();
+        this.__robotArmManager__ = new RobotArmManager();
+    }
+
+    private RobotArmManager getRobotArmManager() {
+        return  this.__robotArmManager__;
     }
 }
