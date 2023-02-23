@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import com.example.robotarmclient.MainActivity;
 import com.example.robotarmclient.RobotArmManager;
 import com.example.robotarmclient.databinding.FragmentProgramControlBinding;
 
@@ -17,7 +18,7 @@ public class ProgramControlFragment extends Fragment {
     private FragmentProgramControlBinding binding;
     RobotArmManager __robotArmManager__;
 
-    Activity activity;
+    MainActivity activity;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -30,10 +31,12 @@ public class ProgramControlFragment extends Fragment {
         final TextView textView = binding.textProgramControl;
         programControlViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
+        activity = (MainActivity) getActivity();
+
         binding.buttonReconnect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int i = 0;
+                activity.test.run();
             }
         });
 

@@ -24,6 +24,7 @@ public class TCPSocket implements Runnable {
         this.setPort(port);
         this.setErrorStatus(false);
         this.setWorkStatus(false);
+        this.setTcpSocketThreadNull();
         this.setSocketNull();
         this.setOutputStreamNull();
         this.setInputStreamNull();
@@ -177,6 +178,10 @@ public class TCPSocket implements Runnable {
             System.out.println("RA_TCPSocket_CloseInputStream: ERROR (" + e.toString() + ")");
             this.setErrorStatus(true);
         }
+    }
+
+    private void setTcpSocketThreadNull() {
+        this.__TCPSocketThread__ = null;
     }
 
     private void setSocketNull() {

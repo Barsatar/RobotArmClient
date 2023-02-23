@@ -54,7 +54,7 @@ public class RobotArmManager implements  Runnable {
         return this.__robotArmManagerThread__;
     }
 
-    private TCPSocket getTCPSocket() {
+    public TCPSocket getTCPSocket() {
         return this.__TCPSocket__;
     }
 

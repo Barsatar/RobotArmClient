@@ -15,6 +15,8 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private RobotArmManager __robotArmManager__;
 
+    public Test test;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,7 +26,9 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.appBarMain.toolbar);
 
-        this.createRobotArmManager();
+        //this.createRobotArmManager();
+
+        test = new Test();
 
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
@@ -50,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         this.__robotArmManager__ = new RobotArmManager();
     }
 
-    private RobotArmManager getRobotArmManager() {
-        return  this.__robotArmManager__;
+    public RobotArmManager getRobotArmManager() {
+        return this.__robotArmManager__;
     }
 }
