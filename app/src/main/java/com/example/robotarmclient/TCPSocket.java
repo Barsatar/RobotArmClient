@@ -30,8 +30,6 @@ public class TCPSocket implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("RA_TCPSocket_Run: Start");
-
         this.setErrorStatus(false);
 
         this.createSocket();
@@ -52,8 +50,8 @@ public class TCPSocket implements Runnable {
             return;
         }
 
-        //this.createSendDataListenerThread();
-        //this.createReceiveDataListenerThread();
+        this.createSendDataListenerThread();
+        this.createReceiveDataListenerThread();
         this.createTestConnectionThread();
 
         while (true) {
@@ -70,8 +68,6 @@ public class TCPSocket implements Runnable {
             }
         }
 
-        System.out.println("RA_TCPSocket_Run: End");
-
         this.closeInputStream();
         this.closeOutputStream();
         this.closeSocket();
@@ -81,6 +77,24 @@ public class TCPSocket implements Runnable {
         this.__socketThread__ = new Thread(this::run);
         this.__socketThread__.setPriority(Thread.NORM_PRIORITY);
         this.__socketThread__.start();
+    }
+
+    public void createSendDataListenerThread() {
+        this.__sendDataListenerThread__ = new Thread(this::sendDataListener);
+        this.__sendDataListenerThread__.setPriority(Thread.NORM_PRIORITY);
+        this.__sendDataListenerThread__.start();
+    }
+
+    public void createReceiveDataListenerThread() {
+        this.__receiveDataListenerThread__ = new Thread(this::receiveDataListener);
+        this.__receiveDataListenerThread__.setPriority(Thread.NORM_PRIORITY);
+        this.__receiveDataListenerThread__.start();
+    }
+
+    public void createTestConnectionThread() {
+        this.__testConnectionThread__ = new Thread(this::testConnection);
+        this.__testConnectionThread__.setPriority(Thread.NORM_PRIORITY);
+        this.__testConnectionThread__.start();
     }
 
     public void createSocket() {
@@ -136,23 +150,6 @@ public class TCPSocket implements Runnable {
             this.setErrorStatus(true);
         }
     }
-    public void createSendDataListenerThread() {
-        this.__sendDataListenerThread__ = new Thread(this::sendDataListener);
-        this.__sendDataListenerThread__.setPriority(Thread.NORM_PRIORITY);
-        this.__sendDataListenerThread__.start();
-    }
-
-    public void createReceiveDataListenerThread() {
-        this.__receiveDataListenerThread__ = new Thread(this::receiveDataListener);
-        this.__receiveDataListenerThread__.setPriority(Thread.NORM_PRIORITY);
-        this.__receiveDataListenerThread__.start();
-    }
-
-    public void createTestConnectionThread() {
-        this.__testConnectionThread__ = new Thread(this::testConnection);
-        this.__testConnectionThread__.setPriority(Thread.NORM_PRIORITY);
-        this.__testConnectionThread__.start();
-    }
 
     public void addSendDataArray(byte[] data) {
         this.__sendDataArray__.add(data);
@@ -184,6 +181,18 @@ public class TCPSocket implements Runnable {
 
     public Thread getSocketThread() {
         return this.__socketThread__;
+    }
+
+    public Thread getSendDataListenerThread() {
+        return this.__sendDataListenerThread__;
+    }
+
+    public Thread getReceiveDataListenerThread() {
+        return this.__receiveDataListenerThread__;
+    }
+
+    public Thread getTestConnectionThread() {
+        return this.__testConnectionThread__;
     }
 
     public Socket getSocket() {
@@ -218,18 +227,6 @@ public class TCPSocket implements Runnable {
         return this.__receiveDataArray__.size();
     }
 
-    public Thread getSendDataListenerThread() {
-        return this.__sendDataListenerThread__;
-    }
-
-    public Thread getReceiveDataListenerThread() {
-        return this.__receiveDataListenerThread__;
-    }
-
-    public Thread getTestConnectionThread() {
-        return this.__testConnectionThread__;
-    }
-
     public void sendDataListener() {
         System.out.println("RA_TCPSocket_SendDataListener: Start");
 
@@ -255,11 +252,17 @@ public class TCPSocket implements Runnable {
     public void receiveDataListener() {
         System.out.println("RA_TCPSocket_ReceiveDataListener: Start");
 
+        byte[] data;
+
         while (true) {
-            this.addReceiveDataArray(this.receiveData());
+            data = this.receiveData();
 
             if (this.getErrorStatus()) {
                 break;
+            }
+
+            if (this.removeTestConnectionData(this.byteToString(this.trimData(data))).length() != 0) {
+                this.addReceiveDataArray(data);
             }
         }
 
@@ -270,7 +273,7 @@ public class TCPSocket implements Runnable {
         System.out.println("RA_TCPSocket_TestConnection: Start");
 
         while (true) {
-            this.sendData("test".getBytes(StandardCharsets.UTF_8));
+            this.sendData("RAC".getBytes(StandardCharsets.UTF_8));
 
             if (this.getErrorStatus()) {
                 break;
@@ -302,6 +305,7 @@ public class TCPSocket implements Runnable {
 
         try {
             this.getInputStream().read(data);
+
             System.out.println("RA_TCPSocket_ReceiveData: OK (" + this.byteToString(this.trimData(data)) + ").");
         } catch (IOException e) {
             System.out.println("RA_TCPSocket_ReceiveData: Error (" + e + ").");
@@ -332,5 +336,9 @@ public class TCPSocket implements Runnable {
         }
 
         return outData;
+    }
+
+    private String removeTestConnectionData(String data) {
+        return data.replaceAll("RAS", "");
     }
 }
