@@ -17,7 +17,8 @@ public class RobotArmManager implements Runnable {
     public void run() {
         while (true) {
            if (this.getTCPSocket() != null && this.getTCPSocket().getSocketThread() != null && !this.getTCPSocket().getSocketThread().isAlive()) {
-               this.getTCPSocket().createSocketThread();
+               //this.getTCPSocket().createSocketThread();
+               int i = 0;
            }
 
             if (this.getUDPSocket() != null && this.getUDPSocket().getSocketThread() != null && !this.getUDPSocket().getSocketThread().isAlive()) {
