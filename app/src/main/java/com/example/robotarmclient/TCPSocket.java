@@ -61,7 +61,7 @@ public class TCPSocket implements Runnable {
                     this.getReceiveDataListenerThread().join();
                     this.getTestConnectionThread().join();
                 } catch (InterruptedException e) {
-                    System.out.println("RA_TCPSocket_Run: Error (" + e + ").");
+                    System.out.println("RA_UDPSocket_Run: Error (" + e + ").");
                 }
 
                 break;
@@ -101,7 +101,7 @@ public class TCPSocket implements Runnable {
         try {
             this.__socket__ = new Socket(this.getIP(), this.getPort());
         } catch (IOException e) {
-            System.out.println("RA_TCPSocket_CreateSocket: Error(" + e + ").");
+            System.out.println("RA_UDPSocket_CreateSocket: Error(" + e + ").");
             this.setErrorStatus(true);
         }
     }
@@ -228,8 +228,6 @@ public class TCPSocket implements Runnable {
     }
 
     public void sendDataListener() {
-        System.out.println("RA_TCPSocket_SendDataListener: Start");
-
         while (true) {
             if (this.getSizeSendDataArray() > 0) {
                 this.sendData(this.popSendDataArray());
@@ -245,13 +243,9 @@ public class TCPSocket implements Runnable {
                 throw new RuntimeException(e);
             }
         }
-
-        System.out.println("RA_TCPSocket_SendDataListener: End");
     }
 
     public void receiveDataListener() {
-        System.out.println("RA_TCPSocket_ReceiveDataListener: Start");
-
         byte[] data;
 
         while (true) {
@@ -265,13 +259,9 @@ public class TCPSocket implements Runnable {
                 this.addReceiveDataArray(data);
             }
         }
-
-        System.out.println("RA_TCPSocket_ReceiveDataListener: End");
     }
 
     public void testConnection() {
-        System.out.println("RA_TCPSocket_TestConnection: Start");
-
         while (true) {
             this.sendData("RAC".getBytes(StandardCharsets.UTF_8));
 
@@ -285,8 +275,6 @@ public class TCPSocket implements Runnable {
                 throw new RuntimeException(e);
             }
         }
-
-        System.out.println("RA_TCPSocket_TestConnection: End");
     }
 
     public void sendData(byte[] data) {
