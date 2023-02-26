@@ -61,7 +61,7 @@ public class TCPSocket implements Runnable {
                     this.getReceiveDataListenerThread().join();
                     this.getTestConnectionThread().join();
                 } catch (InterruptedException e) {
-                    System.out.println("RA_UDPSocket_Run: Error (" + e + ").");
+                    System.out.println("RA_TCPSocket_Run: Error (" + e + ").");
                 }
 
                 break;
@@ -101,7 +101,7 @@ public class TCPSocket implements Runnable {
         try {
             this.__socket__ = new Socket(this.getIP(), this.getPort());
         } catch (IOException e) {
-            System.out.println("RA_UDPSocket_CreateSocket: Error(" + e + ").");
+            System.out.println("RA_TCPSocket_CreateSocket: Error(" + e + ").");
             this.setErrorStatus(true);
         }
     }
@@ -263,7 +263,7 @@ public class TCPSocket implements Runnable {
 
     public void testConnection() {
         while (true) {
-            this.sendData("RAC".getBytes(StandardCharsets.UTF_8));
+            this.sendData("RA_TestConnection".getBytes(StandardCharsets.UTF_8));
 
             if (this.getErrorStatus()) {
                 break;
@@ -280,7 +280,10 @@ public class TCPSocket implements Runnable {
     public void sendData(byte[] data) {
         try {
             this.getOutputStream().write(data);
-            System.out.println("RA_TCPSocket_SendData: OK (" + this.byteToString(data) + ").");
+
+            if (this.removeTestConnectionData(this.byteToString(this.trimData(data))).length() != 0) {
+                System.out.println("RA_TCPSocket_SendData: OK (" + this.byteToString(data) + ").");
+            }
         } catch (IOException e) {
             System.out.println("RA_TCPSocket_SendData: Error (" + e + ").");
             this.setErrorStatus(true);
@@ -294,7 +297,9 @@ public class TCPSocket implements Runnable {
         try {
             this.getInputStream().read(data);
 
-            System.out.println("RA_TCPSocket_ReceiveData: OK (" + this.byteToString(this.trimData(data)) + ").");
+            if (this.removeTestConnectionData(this.byteToString(this.trimData(data))).length() != 0) {
+                System.out.println("RA_TCPSocket_ReceiveData: OK (" + this.byteToString(data) + ").");
+            }
         } catch (IOException e) {
             System.out.println("RA_TCPSocket_ReceiveData: Error (" + e + ").");
             this.setErrorStatus(true);
@@ -327,6 +332,6 @@ public class TCPSocket implements Runnable {
     }
 
     private String removeTestConnectionData(String data) {
-        return data.replaceAll("RAS", "");
+        return data.replaceAll("RA_TestConnection", "");
     }
 }

@@ -3,7 +3,7 @@ package com.example.robotarmclient;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.DatagramSocket;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
@@ -13,8 +13,7 @@ public class UDPSocket implements Runnable {
     private Thread __sendDataListenerThread__ = null;
     private Thread __receiveDataListenerThread__ = null;
     private Thread __testConnectionThread__ = null;
-    private OutputStream __outputStream__ = null;
-    private InputStream __inputStream__ = null;
+    private InetAddress __address__ = null;
     private String __ip__ = "";
     private int __port__ = 0;
     private boolean __isErrorStatus__ = false;
@@ -36,15 +35,8 @@ public class UDPSocket implements Runnable {
             return;
         }
 
-        this.createInputStream();
+        this.createAddress();
         if (this.getErrorStatus()) {
-            this.closeSocket();
-            return;
-        }
-
-        this.createOutputStream();
-        if (this.getErrorStatus()) {
-            this.closeInputStream();
             this.closeSocket();
             return;
         }
@@ -60,15 +52,13 @@ public class UDPSocket implements Runnable {
                     this.getReceiveDataListenerThread().join();
                     this.getTestConnectionThread().join();
                 } catch (InterruptedException e) {
-                    System.out.println("RA_TCPSocket_Run: Error (" + e + ").");
+                    System.out.println("RA_UDPSocket_Run: Error (" + e + ").");
                 }
 
                 break;
             }
         }
 
-        this.closeInputStream();
-        this.closeOutputStream();
         this.closeSocket();
     }
 
@@ -76,6 +66,15 @@ public class UDPSocket implements Runnable {
         this.__socketThread__ = new Thread(this::run);
         this.__socketThread__.setPriority(Thread.NORM_PRIORITY);
         this.__socketThread__.start();
+    }
+
+    public void createAddress() {
+        try {
+            this.__address__ = InetAddress.getByName(this.getIP());
+        } catch (UnknownHostException e) {
+            System.out.println("RA_UDPSocket_CreateSocket: Error(" + e + ").");
+            this.setErrorStatus(true);
+        }
     }
 
     public void createSendDataListenerThread() {
@@ -106,30 +105,7 @@ public class UDPSocket implements Runnable {
     }
 
     public void closeSocket() {
-        try {
-            this.__socket__.close();
-        } catch (IOException e) {
-            System.out.println("RA_TCPSocket_CloseSocket: Error(" + e + ").");
-            this.setErrorStatus(true);
-        }
-    }
-
-    private void closeOutputStream() {
-        try {
-            this.getOutputStream().close();
-        } catch (IOException e) {
-            System.out.println("RA_TCPSocket_CloseOutputStream: Error (" + e + ").");
-            this.setErrorStatus(true);
-        }
-    }
-
-    private void closeInputStream() {
-        try {
-            this.getInputStream().close();
-        } catch (IOException e) {
-            System.out.println("RA_TCPSocket_CloseInputStream: Error (" + e + ").");
-            this.setErrorStatus(true);
-        }
+        this.__socket__.close();
     }
 
     public void addSendDataArray(byte[] data) {
@@ -180,12 +156,8 @@ public class UDPSocket implements Runnable {
         return this.__socket__;
     }
 
-    public OutputStream getOutputStream() {
-        return this.__outputStream__;
-    }
-
-    public InputStream getInputStream() {
-        return this.__inputStream__;
+    public InetAddress getAddress() {
+        return this.__address__;
     }
 
     public  String getIP() {
@@ -244,7 +216,7 @@ public class UDPSocket implements Runnable {
 
     public void testConnection() {
         while (true) {
-            this.sendData("RAC".getBytes(StandardCharsets.UTF_8));
+            this.sendData("RA_TestConnection".getBytes(StandardCharsets.UTF_8));
 
             if (this.getErrorStatus()) {
                 break;
@@ -259,25 +231,41 @@ public class UDPSocket implements Runnable {
     }
 
     public void sendData(byte[] data) {
+        DatagramPacket sendPacket = new DatagramPacket(data, data.length, this.getAddress(), this.getPort());
+
         try {
-            this.getOutputStream().write(data);
-            System.out.println("RA_TCPSocket_SendData: OK (" + this.byteToString(data) + ").");
+            this.getSocket().send(sendPacket);
+
+            if (this.removeTestConnectionData(this.byteToString(this.trimData(data))).length() != 0) {
+                System.out.println("RA_UDPSocket_SendData: OK (" + this.byteToString(data) + ").");
+            }
         } catch (IOException e) {
-            System.out.println("RA_TCPSocket_SendData: Error (" + e + ").");
+            System.out.println("RA_UDPSocket_SendData: Error (" + e + ").");
             this.setErrorStatus(true);
         }
     }
 
     public byte[] receiveData() {
-        int bufferSize = 1024;
-        byte[] data = new byte[bufferSize];
+        byte[] data = new byte[0];
 
         try {
-            this.getInputStream().read(data);
+            byte[] buffer = new byte[50000];
+            DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+            this.getSocket().receive(packet);
+            byte[] byteBuffer = packet.getData();
+            byte[] outData = new byte[packet.getLength()];
 
-            System.out.println("RA_TCPSocket_ReceiveData: OK (" + this.byteToString(this.trimData(data)) + ").");
-        } catch (IOException e) {
-            System.out.println("RA_TCPSocket_ReceiveData: Error (" + e + ").");
+            for (int i = 0; i < outData.length; ++i) {
+                outData[i] = byteBuffer[i];
+            }
+
+            data = outData;
+
+            if (this.removeTestConnectionData(this.byteToString(this.trimData(data))).length() != 0) {
+                System.out.println("RA_UDPSocket_ReceiveData: OK (" + this.byteToString(data) + ").");
+            }
+        } catch (Exception e) {
+            System.out.println("RA_UDPSocket_ReceiveData: Error (" + e + ").");
             this.setErrorStatus(true);
         }
 
@@ -308,6 +296,6 @@ public class UDPSocket implements Runnable {
     }
 
     private String removeTestConnectionData(String data) {
-        return data.replaceAll("RAS", "");
+        return data.replaceAll("RA_TestConnection", "");
     }
 }
